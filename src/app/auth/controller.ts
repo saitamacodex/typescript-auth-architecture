@@ -4,7 +4,12 @@ import { db } from "../../db/index.js";
 import { usersTable } from "../../db/schema.js";
 import { eq } from "drizzle-orm";
 import { randomBytes, createHmac } from "node:crypto";
-import { createUserToken, verifyUserToken } from "./utils/token.js";
+import {
+  createUserToken,
+  verifyUserToken,
+  type UserTokenPayload,
+} from "./utils/token.js";
+import { ZodFirstPartyTypeKind } from "zod/v3";
 
 class AuthenticationController {
   // sign up a user
@@ -88,6 +93,22 @@ class AuthenticationController {
     return res.json({
       message: "Sign in success",
       data: { token: token },
+    });
+  }
+
+  public async getMe(req: Request, res: Response) {
+    // @ts-ignore
+    const { id } = req.user as UserTokenPayload;
+
+    const [userRes] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, id));
+
+    return res.json({
+      firstName: userRes?.firstName,
+      lastname: userRes?.lastName,
+      email: userRes?.email,
     });
   }
 }
