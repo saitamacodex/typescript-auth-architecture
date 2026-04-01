@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { signupPayloadModel } from "./models.js";
+import { signupPayloadModel, singInPayloadModel } from "./models.js";
 import { db } from "../../db/index.js";
 import { usersTable } from "../../db/schema.js";
 import { eq } from "drizzle-orm";
@@ -47,6 +47,45 @@ class AuthenticationController {
     return res.status(201).json({
       message: "User has been created. ",
       data: { id: result?.id },
+    });
+  }
+
+  public async handleSingIn(req: Request, res: Response) {
+    const validationResult = await singInPayloadModel.safeParseAsync(req.body);
+
+    if (validationResult.error) {
+      return res.status(400).json({
+        message: "Body validation failed",
+        error: validationResult.error.issues,
+      });
+    }
+
+    const { email, password } = validationResult.data;
+    const [userSelect] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email));
+
+    if (!userSelect) {
+      return res.status(404).json({
+        message: `user with email ${email} does not exist`,
+      });
+    }
+    // if user exist then we have to verify the hash
+    // get the salt from the db
+    const salt = userSelect.salt!;
+    const hash = createHmac("sha256", salt).update(password).digest("hex");
+
+    if (userSelect.password !== hash) {
+      return res.status(400).json({
+        message: "User email or password is incorrect",
+      });
+    }
+    // if user password matched create token
+
+    return res.json({
+      message: "Sign in success",
+      data: { token: 1 },
     });
   }
 }
