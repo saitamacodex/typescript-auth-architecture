@@ -1,16 +1,14 @@
 import express, { type Application } from "express";
+import authRouter from "./auth/route.js";
 
 export function createExppressApp(): Application {
   const app = express();
 
   // middleware
+  app.use(express.json());
 
   // routes
-  app.get("/", (req, res) => {
-    res.json({
-      message: "welcome to AUTH arch.",
-    });
-  });
+  app.use("/auth", authRouter);
 
   return app;
 }
