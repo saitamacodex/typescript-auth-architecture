@@ -8,8 +8,8 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-// pgTable is our postgres table
-// like table name
+// pgTable is our postgres table in database
+// usersTable is the table name in typeScript
 export const usersTable = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
 

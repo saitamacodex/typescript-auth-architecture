@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { signupPayloadModel, singInPayloadModel } from "./models.js";
-import { db } from "../../db/index.js";
+import { db } from "../../db/db.js";
 import { usersTable } from "../../db/schema.js";
 import { eq } from "drizzle-orm";
 import { randomBytes, createHmac } from "node:crypto";
@@ -9,7 +9,6 @@ import {
   verifyUserToken,
   type UserTokenPayload,
 } from "./utils/token.js";
-import { ZodFirstPartyTypeKind } from "zod/v3";
 
 class AuthenticationController {
   // sign up a user

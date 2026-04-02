@@ -4,6 +4,7 @@ import { verifyUserToken } from "../auth/utils/token.js";
 export const authMiddleware = () => {
   return function (req: Request, res: Response, next: NextFunction) {
     const header = req.headers["authorization"];
+
     if (!header) next(); // if not authrixation header pass it - do not restrict anything
     if (!header?.startsWith("Bearer")) {
       return res.status(400).json({
