@@ -8,7 +8,7 @@ const authController = new AuthenticationController();
 
 authRouter.post("/sign-up", authController.handleSignUp.bind(authController));
 authRouter.post("/sign-in", authController.handleSingIn.bind(authController));
-authRouter.post(
+authRouter.get(
   "/me",
   restrictToAuthUser(),
   authController.getMe.bind(authController),
