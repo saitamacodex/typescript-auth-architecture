@@ -24,7 +24,7 @@ export const authMiddleware = () => {
       // if no user found with the provied token
       if (!user) {
         return res.status(401).json({
-          error: "Invalid or expired token",
+          error: "User no longer logged in",
         });
       }
       // @ts-ignore
